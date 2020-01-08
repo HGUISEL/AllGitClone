@@ -10,6 +10,7 @@ import java.util.HashMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.retro.restapi.control.GithubService;
 
 import retrofit2.Retrofit;
 import retrofit2.Call;
@@ -18,7 +19,7 @@ import retrofit2.Response;
 
 public class RetroMain {
 	
-	private static Retrofit retrofit = null;
+	private static  Retrofit retrofit = null;
 	private static boolean check_blank = false;
 	private static boolean check_over_limits = false;
 	private static int last_forks = 0;
@@ -45,7 +46,6 @@ public class RetroMain {
 		// 1000 counts reference available
 		while(!check_blank) {
 			if (check_over_limits) {
-				//Thread.sleep(4000);
 				lit = String.valueOf(last_forks);
 				options.replace("q", "language:java forks:200.." + lit);
 				pages = 1;
@@ -54,10 +54,10 @@ public class RetroMain {
 			
 			else {
 				options.replace("page", String.valueOf(pages));
-				runLanguageService(bw, pw, options);
 				System.out.println("current page : " + pages);
+				Thread.sleep(1000);
+				runSyncService(bw, pw, options);
 				pages++;
-				Thread.sleep(4100);
 			}
 			
 		}
@@ -127,30 +127,80 @@ public class RetroMain {
 		});
 	}
 	
-	public static void runLanguageService(BufferedWriter bw, PrintWriter pw, HashMap<String, String> options) throws IOException {
+	//Synchronous method
+	public static void runSyncService(BufferedWriter bw, PrintWriter pw, HashMap<String, String> options) throws IOException {
+			
+		GithubService service = retrofit.create(GithubService.class);
+		Call<JsonObject> lrequest = service.getJavaRepositories(options);
+
+			
+		try {
+			Response<JsonObject> response = lrequest.execute();
+			
+			if (response.message().equals("Forbidden")) {
+				System.out.println("The contents are over 1000 counts.\n");
+				check_over_limits = true;
+				return;
+			}
+				
+			JsonArray json_com = new Gson().fromJson(response.body().get("items"), JsonArray.class);
+		
+				
+			if (json_com.size() == 0) {
+				System.out.println("There is no content ever.");
+				check_blank = true;
+				return;
+			}
+				
+			for (int i = 0; i < json_com.size(); i++) {
+				JsonObject item = new Gson().fromJson(json_com.get(i), JsonObject.class);
+				String line = item.get("html_url") + "\n" +
+							item.get("description") + "\n" +
+							item.get("forks") + "\n" +
+							item.get("created_at") + "\n\n";
+					
+				System.out.println(line);
+					
+				if (i == json_com.size() - 1)
+					last_forks = item.get("forks").getAsInt() - 1;
+			}
+				
+		}
+			
+		catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+		
+		
+		
+		//Asynchronous method
+	
+	
+	public static void runAsyncService(BufferedWriter bw, PrintWriter pw, HashMap<String, String> options) throws IOException {
 		
 		GithubService service = retrofit.create(GithubService.class);
 		Call<JsonObject> lrequest = service.getJavaRepositories(options);
+		
+		
 		lrequest.enqueue(new Callback<JsonObject>() {
 			@Override
 			public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
 				
 				//If the contents are over 1000, TODO some solutions to crawl other various contents.
 				if (response.message().equals("Forbidden")) {
-					System.out.println("The contents are over 1000 counts.\n");
 					check_over_limits = true;
+					System.out.println("The contents are over 1000 counts.\n");
 					return;
 				}
 				
 				JsonArray json_com = new Gson().fromJson(response.body().get("items"), JsonArray.class);
 
 				if (json_com.size() == 0) {
-					System.out.println("There is no content ever.");
 					check_blank = true;
+					System.out.println("There is no content ever.");
 					return;
 				}
-				
-
 				
 				
 				//if we want to set fork counts options, we can make if statement using item.get("forks") method
