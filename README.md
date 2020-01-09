@@ -1,23 +1,61 @@
 # AllGitClone
-A tool for cloning git repositories
+>A tool which helps to get various url of github repositories what user wants.
 
-Rest API using Retrofit + Okhttp
 
-Need to implement
-- Can I get all repositories in github?
-- Can I give some options to get repositories?
-- The methods that apply proper options.
-  - ```JsonObject jsonObject = new Gson().fromJson(response.body().get(i), JsonObject.class);```
+## Retrofit + OkHttp
+>How to communicate to web Server as Client?
+```java
+@GET("search/repositories")
+Call<JsonObject> getJavaRepositories(@QueryMap Map<String, String> lang);
+```
+
   - query to search (ex: api.github.com/search/repositories?q=language:java)
 
-- First total search, and options to java, or set firstly query options?
+
+## Declaration to communicating object
+```java
+Retrofit retro = new Retrofit.Builder()
+                              .baseUrl(BASE_URL)
+                              .addConverterFactory(GsonConverterFactory.create())
+                              .build();
+```
+
+## Which contents we have to get?
+>Search appropriate repos according to given options
+
+>Base option : created_at (created date of repo)
 
 
-I. get all data (like, repository name, created timestamp, repository url, repository description...) using retrofit
+## How to divide many results using options?
+```java
+String lang = "java";
+String created = "2015-1-1";
+int pages = 1;
 
-II. apply options using query (like, language, timestamp, commit counts, fork counts...)
+//TODO (need loop funct)
+change_date(created);
 
-III. design to command line program
+pages++;
 
-IV. replace all options to command line
+String query_options = "language:" + lang +
+                       " created:" + created;
+                       
+                       
+options.replace("q", query_options);
 
+//Option Query Map
+options.put("q", query_options);
+options.put("page", String.valueOf(pages));
+options.put("sort", "forks");
+options.put("per_page", String.valueOf(100));
+```
+
+>Need to implement the function which changes date.
+
+
+## Multi-options
+> Need to gather informations to add another options like commit, repo size, etc.
+
+
+## Result
+> Repo URL that meets given criteria
