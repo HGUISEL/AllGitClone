@@ -10,6 +10,7 @@ public class InputControl {
 	private String lang;
 	private String fork_count;
 	private String created_date;
+
 	
 	public HashMap<String, String> getDefaultOption() {
 		HashMap<String, String> options = new HashMap<>();
@@ -38,6 +39,7 @@ public class InputControl {
 		return options;
 	}
 	
+	//Consider the standard query date, how to change the value to reference all repos.
 	public void change_date(HashMap<String, String> options) throws ParseException {
 		String chg = options.get("q");
 		int index = chg.indexOf('-');

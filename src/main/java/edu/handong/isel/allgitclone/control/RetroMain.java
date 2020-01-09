@@ -22,8 +22,6 @@ public class RetroMain {
 		PrintWriter pw = new PrintWriter(bw, true);
 		
 		
-
-		// 1000 counts reference available
 		while(!act.isCheck_blank()) {
 			
 			while (pages != 11) {
