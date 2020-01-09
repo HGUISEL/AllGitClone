@@ -12,12 +12,6 @@ import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 
 public interface GithubService {
-	//https://api.github.com/user/userName/repos
-	@GET("users/{user}/repos")
-	//@Path : replace variable of API endpoint
-	Call<JsonArray> getUserRepositories(@Path("user") String userName);
-	
-	
 	//https://api.github.com/repos/userName/repoName/commits
 	@GET("repos/{user}/{repo}/commits")
 	Call<JsonArray> getUserCommits(@Path("user") String userName, @Path("repo") String repoName);

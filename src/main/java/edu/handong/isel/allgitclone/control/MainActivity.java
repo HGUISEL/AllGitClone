@@ -27,39 +27,6 @@ public class MainActivity {
 		retrofit = new_object.getObject();
 	}
 	
-	public void runRepoService(String userName) {
-		GithubService service = retrofit.create(GithubService.class);
-		Call<JsonArray> request = service.getUserRepositories(userName);
-		
-		
-		//Asynchronous method (Synchronous : request.execute())
-		request.enqueue(new Callback<JsonArray>() {
-			@Override
-			public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
-				
-				System.out.println("Total count : " + response.body().size());
-				
-				for (int i = 0; i < response.body().size(); i++) {
-					
-					JsonObject json_resp = new Gson().fromJson(response.body().get(i), JsonObject.class);
-					//JsonObject json_resp_owner = new Gson().fromJson(json_resp.get("owner"), JsonObject.class);
-					
-					System.out.println(json_resp.get("id") + "\n" +
-									json_resp.get("node_id") + "\n" +
-									json_resp.get("html_url") + "\n" +
-									json_resp.get("created_at") + "\n" +
-									json_resp.get("git_url") + "\n" +
-									json_resp.get("default_branch") + "\n\n");
-				}
-			}
-			
-			@Override
-			public void onFailure(Call<JsonArray> call, Throwable t) {
-				t.printStackTrace();
-			}
-		});
-	}
-	
 	public void runCommitService(String userName, String repoName) {
 		GithubService service = retrofit.create(GithubService.class);
 		Call<JsonArray> crequest = service.getUserCommits(userName, repoName);
@@ -88,19 +55,20 @@ public class MainActivity {
 	
 	//Synchronous method
 	public void runSyncService(BufferedWriter bw, PrintWriter pw, HashMap<String, String> options) throws IOException {
-		
 		GithubService service = retrofit.create(GithubService.class);
 		Call<JsonObject> lrequest = service.getJavaRepositories(options);
-
-		
+	
 		try {
 			Response<JsonObject> response = lrequest.execute();
 			
 			if (response.message().equals("Forbidden")) {
-				System.out.println("The contents are over 1000 counts.\n");
+				System.out.println("Request is being processed. Please wait.\n");
 				check_over_limits = true;
 				return;
 			}
+			
+			else
+				check_over_limits = false;
 			
 			JsonArray json_com = new Gson().fromJson(response.body().get("items"), JsonArray.class);
 			
@@ -143,12 +111,7 @@ public class MainActivity {
 			@Override
 			public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
 				
-				//If the contents are over 1000, TODO some solutions to crawl other various contents.
-				if (response.message().equals("Forbidden")) {
-					System.out.println("The contents are over 1000 counts.\n");
-					check_over_limits = true;
-					return;
-				}
+				
 				
 				JsonArray json_com = new Gson().fromJson(response.body().get("items"), JsonArray.class);
 
@@ -157,8 +120,6 @@ public class MainActivity {
 					check_blank = true;
 					return;
 				}
-				
-
 				
 				
 				//if we want to set fork counts options, we can make if statement using item.get("forks") method
