@@ -7,7 +7,7 @@ Need to implement
 - Can I get all repositories in github?
 - Can I give some options to get repositories?
 - The methods that apply proper options.
-  - ```JsonObject jsonObject = new Gson().fromJson(response.body().get(i), JsonObject.class);```
+  - ```java JsonObject jsonObject = new Gson().fromJson(response.body().get(i), JsonObject.class);```
   - query to search (ex: api.github.com/search/repositories?q=language:java)
 
 - First total search, and options to java, or set firstly query options?
