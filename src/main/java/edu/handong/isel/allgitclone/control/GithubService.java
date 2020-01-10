@@ -7,14 +7,17 @@ import com.google.gson.JsonObject;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.HEAD;
+import retrofit2.http.Headers;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 
 public interface GithubService {
 	//https://api.github.com/repos/userName/repoName/commits
-	@GET("repos/{user}/{repo}/commits")
-	Call<JsonArray> getUserCommits(@Path("user") String userName, @Path("repo") String repoName);
+	@Headers("Accept: application/vnd.github.cloak-preview")
+	@GET("search/commits")
+	Call<JsonObject> getUserCommits(@QueryMap Map<String, String> lang);
 	
 	@GET("search/repositories")
 	Call<JsonObject> getJavaRepositories(@QueryMap Map<String, String> lang);
