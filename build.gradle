@@ -11,6 +11,9 @@ plugins {
     id 'java-library'
 }
 
+apply plugin: 'application'
+mainClassName = "edu.handong.isel.allgitclone.control.RetroMain"
+
 repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
@@ -35,4 +38,8 @@ dependencies {
     
     // https://mvnrepository.com/artifact/com.squareup.retrofit2/converter-gson
 	compile group: 'com.squareup.retrofit2', name: 'converter-gson', version: '2.7.0'
+	
+	// https://mvnrepository.com/artifact/commons-cli/commons-cli
+	compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
+	
 }

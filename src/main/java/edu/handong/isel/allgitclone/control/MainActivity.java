@@ -18,8 +18,8 @@ public class MainActivity {
 	
 	private static Retrofit retrofit = null;
 	private boolean check_blank = false;
-	private boolean check_over_limits = false;
-	private String last_pushed = null;
+	private boolean check_over_limits = false;		//indicate which the page is over 10 or not.
+	private String last_pushed = null;			//standard
 
 	public MainActivity() {
 		RetroBasic new_object = new RetroBasic();
@@ -101,6 +101,7 @@ public class MainActivity {
 				return;
 			}
 			
+			
 			for (int i = 0; i < json_com.size(); i++) {
 				JsonObject item = new Gson().fromJson(json_com.get(i), JsonObject.class);
 				String line = item.get("html_url") + "\n" +
@@ -109,7 +110,16 @@ public class MainActivity {
 							item.get("created_at") + "\n" +
 							item.get("pushed_at") + "\n\n";
 				
+				String stored_line =
+							item.get("description") + "," +
+							item.get("forks") + "," +
+							item.get("created_at") + "," +
+							item.get("pushed_at") + "," +
+							item.get("html_url") + "\n\n";
+				
 				System.out.println(line);
+				pw.write(stored_line);
+				pw.flush();
 				
 				if (i == json_com.size() - 1)
 					last_pushed = item.get("pushed_at").getAsString();

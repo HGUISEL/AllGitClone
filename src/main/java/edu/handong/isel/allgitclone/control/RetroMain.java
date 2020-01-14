@@ -14,14 +14,19 @@ public class RetroMain {
 	public static void main (String[] args) throws IOException, InterruptedException {
 		
 		MainActivity act = new MainActivity();
-		InputControl set_input = new InputControl();
-		options = set_input.getDefaultOption();
+		CmdOptions cmdOptions = new CmdOptions(args);
+		
+		options = cmdOptions.getRefinedOpt();
+		
 		int pages = 1;
 		
-		BufferedWriter bw = new BufferedWriter(new FileWriter(new File("gitService.txt"), true));
+		BufferedWriter bw = new BufferedWriter(new FileWriter(new File("gitService.csv"), true));
 		PrintWriter pw = new PrintWriter(bw, true);
+				
 		
-		HashMap<String, String> ok = new HashMap<>();
+		pw.write("Description,forks count,Created date,Pushed date,Repo URL\n");
+		pw.flush();
+		
 		
 		while(!act.isCheck_blank()) {
 			
@@ -44,8 +49,7 @@ public class RetroMain {
 				
 			}
 			
-			
-			set_input.change_date(options, act.getLast_pushed());
+			cmdOptions.changeDate(options, act.getLast_pushed());
 			pages = 1;
 		}
 		
