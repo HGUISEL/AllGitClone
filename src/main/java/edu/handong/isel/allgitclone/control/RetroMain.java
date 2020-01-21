@@ -8,55 +8,91 @@ import java.io.PrintWriter;
 import java.text.ParseException;
 import java.util.HashMap;
 
+import edu.handong.isel.allgitclone.act.ActivityControlUnit;
+import edu.handong.isel.allgitclone.act.CommitActivity;
+import edu.handong.isel.allgitclone.act.RepoActivity;
+
 public class RetroMain {
-	private static HashMap<String, String> options;
+	private static HashMap<String, String> repoOpt, commitOpt;
+	
+	
 	
 	public static void main (String[] args) throws IOException, InterruptedException {
 		
-		MainActivity act = new MainActivity();
 		CmdOptions cmdOptions = new CmdOptions(args);
+		repoOpt = cmdOptions.getRepoOpt();
+		commitOpt = cmdOptions.getCommitOpt();
+		double dValue;
+		int iValue;
 		
-		options = cmdOptions.getRefinedOpt();
+		//ActivityControlUnit unit = new ActivityControlUnit();
 		
 		int pages = 1;
 		
-		BufferedWriter bw = new BufferedWriter(new FileWriter(new File("gitService.csv"), true));
+		BufferedWriter bw = new BufferedWriter(new FileWriter(new File("CommitResult.csv"), true));
 		PrintWriter pw = new PrintWriter(bw, true);
-				
 		
-		pw.write("Description,forks count,Created date,Pushed date,Repo URL\n");
-		pw.flush();
+		RepoActivity unit = new RepoActivity();
 		
-		
-		while(!act.isCheck_blank()) {
+		while(!unit.isCheck_blank()) {
 			
-			while (pages != 11 && !act.isCheck_blank()) {
+			while (pages != 11 && !unit.isCheck_blank()) {
 				
 				//random sleep time to 1~3 sec
-				double dValue = Math.random();
-				int iValue = (int)(dValue * 2) + 1;
-				Thread.sleep(iValue * 1000);
+				dValue = Math.random();
+				iValue = (int)(dValue * 2000) + 1;
+				Thread.sleep(iValue);
 				
-				options.replace("page", String.valueOf(pages));
-				//act.runSyncService(bw, pw, options);
-				act.runSyncService(bw, pw, options);
+				repoOpt.replace("page", String.valueOf(pages));
+				
+				unit.start(bw, pw, repoOpt);
 				
 				System.out.println("current page : " + pages);
-				System.out.println(options.get("q"));
+				System.out.println(repoOpt.get("q"));
 
-				if (!act.isCheck_over_limits())
+				if (!unit.isCheck_over_limits())
 					pages++;
 				
 			}
 			
-			cmdOptions.changeDate(options, act.getLast_pushed());
+			cmdOptions.changeUpdate(repoOpt, unit.getLast_date());
 			pages = 1;
 		}
 		
-		pw.close();
+		
+		System.out.println("\n*******Convert to commit search*********\n");
+		
+		CommitActivity unit2 = new CommitActivity();
+		pages = 1;
+		
+		while(!unit2.isCheck_blank()) {
+			
+			while (pages != 11 && !unit2.isCheck_blank()) {
+				
+				//random sleep time to 1~3 sec
+				dValue = Math.random();
+				iValue = (int)(dValue * 2000) + 1;
+				Thread.sleep(iValue);
+				
+				commitOpt.replace("page", String.valueOf(pages));
+				
+				unit2.start(bw, pw, commitOpt);
+				
+				System.out.println("current page : " + pages);
+				System.out.println(commitOpt.get("q"));
+
+				if (!unit2.isCheck_over_limits())
+					pages++;
+				
+			}
+			
+			cmdOptions.changeCommitDate(commitOpt, unit2.getLast_date());
+			pages = 1;
+		}
+		
+	
 		return;
 		
-
 	}
 	
 }

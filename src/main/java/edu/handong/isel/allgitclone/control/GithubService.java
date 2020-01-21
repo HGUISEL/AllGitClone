@@ -21,4 +21,8 @@ public interface GithubService {
 	
 	@GET("search/repositories")
 	Call<JsonObject> getJavaRepositories(@QueryMap Map<String, String> lang);
+	
+	@GET("search/issues")
+	Call<JsonObject> getIssues(@QueryMap Map<String, String> lang);
+	
 }

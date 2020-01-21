@@ -14,13 +14,17 @@ public class CmdOptions {
 	private String lang;
 	private String forkCount;
 	private String recentDate;
+	private String authorDate;
+	private String committerDate;
 	private boolean help;
-	private HashMap<String, String> refinedOpt;
+	private HashMap<String, String> repoOpt;
+	private HashMap<String, String> commitOpt;
 	
 
 	public CmdOptions (String[] args) {
 		Options options = createOpt();
-		refinedOpt = new HashMap<>();
+		repoOpt = new HashMap<>();
+		commitOpt = new HashMap<>();
 		
 		if (parseOptions(options, args)) {
 			if (help) {
@@ -33,8 +37,10 @@ public class CmdOptions {
 		
 	}
 	
+	
+	
 	//Consider the standard query date, how to change the value to reference all repos.
-	public void changeDate(HashMap<String, String> options, String last_pushed) {
+	public void changeUpdate(HashMap<String, String> options, String last_pushed) {
 		String chg = options.get("q");
 		String changed_date = last_pushed.substring(0, last_pushed.indexOf('T'));
 			
@@ -51,31 +57,116 @@ public class CmdOptions {
 	}
 	
 	
-	public HashMap<String, String> getRefinedOpt() {
-		return refinedOpt;
+	
+	public void changeCommitDate(HashMap<String, String> options, String last_date) {
+		String chg = options.get("q");
+		String changed_date = last_date.substring(0, last_date.indexOf('T'));
+		
+		if (chg.contains("author-date")) {
+			String origin_date = chg.substring(chg.length() - 10, chg.length());
+			
+			/*
+			 * if the changed date is same as right before
+			 * change twice to increase day
+			 * 
+			 */
+			if (origin_date.equals(changed_date))
+				changed_date = changeDay(changed_date);
+			
+			
+			chg = chg.replace(origin_date, changed_date);
+		}
+		
+		else
+			chg += " author-date:<=" + changed_date;
+		
+		options.replace("q", chg);
 	}
+	
+	
+	public HashMap<String, String> getRepoOpt() {
+		return repoOpt;
+	}
+	
+	public HashMap<String, String> getCommitOpt() {
+		return commitOpt;
+	}
+	
+	
+	
+	private String changeDay(String date) {
+		int year = Integer.parseInt(date.substring(0, 4));
+		int month = Integer.parseInt(date.substring(5, 7));
+		String day = date.substring(8, 10);
+		String returnDate;
+		
+		if (month == 12) {
+			year++;
+			month = 1;
+		}
+		
+		else
+			month++;
+		
+		
+		if (month < 10)
+			returnDate = year + "-0" + month + "-" + day;
+		
+		else
+			returnDate = year + "-" + month + "-" + day;
+		
+		return returnDate;
+	}
+	
+	
+	
+	
+	/*	language, fork, pushed : searching repositories
+	 * 	author-date, committer-date : searching commits
+	 */
 	
 	private void RefiningOpt() {
 		
-		String opt = "";
+		String repo_opt = "";
+		String commit_opt = "";
 		
 		if (!lang.isBlank())
-			opt += "language:" + lang;
+			repo_opt += "language:" + lang;
 		
 		
 		if (!forkCount.isBlank())
-			opt += " forks:" + forkCount;
+			repo_opt += " forks:" + forkCount;
+		
 		
 		if (!recentDate.isBlank())
-			opt += " pushed:" + recentDate;
+			repo_opt += " pushed:" + recentDate;
+			
 		
-		refinedOpt.put("q", opt);
-		refinedOpt.put("sort", "updated");
-		refinedOpt.put("page", String.valueOf(1));
-		refinedOpt.put("per_page", String.valueOf(100));
+		if (!authorDate.isBlank())
+			commit_opt += " author-date:" + authorDate;
+		
+		
+		if (!committerDate.isBlank())
+			commit_opt += " committer-date:" + committerDate;
+		
+		
+		repoOpt.put("q", repo_opt);
+		repoOpt.put("sort", "updated");
+		repoOpt.put("page", String.valueOf(1));
+		repoOpt.put("per_page", String.valueOf(100));
+		
+		commitOpt.put("q", commit_opt);
+		commitOpt.put("sort", "author-date");
+		commitOpt.put("page", String.valueOf(1));
+		commitOpt.put("per_page", String.valueOf(100));
 		
 		if (recentDate.contains(">="))
-			refinedOpt.put("order", "asc");
+			repoOpt.put("order", "asc");
+		
+		
+		if (authorDate.contains(">=") || authorDate.contains(">="))
+			commitOpt.put("order", "asc");
+		
 	}
 	
 
@@ -88,16 +179,37 @@ public class CmdOptions {
 											.argName("language setting")
 											.build());
 		
+		
 		options.addOption(Option.builder("f").longOpt("fork")
 											.desc("Set the count of forks to range of repositories.")
 											.hasArg()
 											.argName("fork counts")
 											.build());
 		
+		
 		options.addOption(Option.builder("d").longOpt("date")
 											.desc("Set the date when the author pushed lately")
 											.hasArg()
 											.argName("recent push date")
+											.build());
+		
+		
+		options.addOption(Option.builder("lb").longOpt("label")
+											.desc("Search pull request & issues using labels")
+											.hasArg()
+											.argName("label setting")
+											.build());
+		
+		options.addOption(Option.builder("ad").longOpt("adate")
+											.desc("Set commit author-date")
+											.hasArg()
+											.argName("author date")
+											.build());
+		
+		options.addOption(Option.builder("cd").longOpt("cdate")
+											.desc("Set commit committer-date")
+											.hasArg()
+											.argName("committer date")
 											.build());
 		
 		return options;
@@ -107,7 +219,7 @@ public class CmdOptions {
 	private void printHelp(Options options) {
 		HelpFormatter formatter = new HelpFormatter();
 		String header = "All git clone CommandLine";
-		String footer = "Available Options : language(l), fork(f), date(d)";
+		String footer = "Available Options : Please refer to Readme file";
 		formatter.printHelp("AllGitClone", header, options, footer, true);
 	}
 	
@@ -120,6 +232,8 @@ public class CmdOptions {
 			lang = cmd.getOptionValue("l", "");
 			forkCount = cmd.getOptionValue("f", "");
 			recentDate = cmd.getOptionValue("d", "");
+			authorDate = cmd.getOptionValue("ad", "");
+			committerDate = cmd.getOptionValue("cd", "");
 			help = cmd.hasOption("h");
 			
 		}catch (Exception e) {
