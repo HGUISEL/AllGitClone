@@ -4,31 +4,90 @@ import java.io.BufferedWriter;
 import java.io.PrintWriter;
 import java.util.HashMap;
 
+import edu.handong.isel.allgitclone.control.CmdOptions;
+
+
 public class ActivityControlUnit {
-	private boolean check_blank = false;
-	private boolean check_over_limits = false;		//indicate which the page is over 10 or not.
-	private String last_date = null;
-	
-	
-	public ActivityControlUnit() {
+
+	public void run(CmdOptions cmdOptions, BufferedWriter bw, PrintWriter pw) throws InterruptedException {
+		HashMap<String, String> repoOpt = cmdOptions.getRepoOpt();
+		HashMap<String, String> commitOpt = cmdOptions.getCommitOpt();
+		double dValue;
+		int iValue;
+		int pages = 1;
 		
-	}
-	
-	public void run(BufferedWriter bw, PrintWriter pw, HashMap<String, String> issueOption) {
 		
-	}
+		/*
+		 * First work : search repositories
+		 */
+		
+		RepoActivity searchRepo = new RepoActivity();
+		
+		while(!searchRepo.isCheck_blank()) {
+			
+			while (pages != 11 && !searchRepo.isCheck_blank()) {
+				
+				//random sleep time to 1~3 sec
+				dValue = Math.random();
+				iValue = (int)(dValue * 2000) + 1;
+				Thread.sleep(iValue);
+				
+				repoOpt.replace("page", String.valueOf(pages));
+				
+				searchRepo.start(bw, pw, repoOpt);
+				
+				System.out.println("current page : " + pages);
+				System.out.println(repoOpt.get("q"));
 
-	
-	public boolean isCheck_blank() {
-		return check_blank;
-	}
+				if (!searchRepo.isCheck_over_limits())
+					pages++;
+				
+			}
+			
+			cmdOptions.changeUpdate(repoOpt, searchRepo.getLast_date());
+			pages = 1;
+		}
+		
+		
+		
+		//If there is no option for commit searching query, the program is exit. 
+		if (cmdOptions.getCommitOpt().get("q").isBlank()) {
+			System.out.println("As there is no option for commit query, the search is end up.");
+			return;
+		}
+		
+		
+		
+		/*
+		 * Second work : search commit
+		 */
+		
+		CommitActivity searchCommit = new CommitActivity();
+		pages = 1;
+		
+		while(!searchCommit.isCheck_blank()) {
+			
+			while (pages != 11 && !searchCommit.isCheck_blank()) {
+				
+				//random sleep time to 1~3 sec
+				dValue = Math.random();
+				iValue = (int)(dValue * 2000) + 1;
+				Thread.sleep(iValue);
+				
+				commitOpt.replace("page", String.valueOf(pages));
+				
+				searchCommit.start(bw, pw, commitOpt);
+				
+				System.out.println("current page : " + pages);
+				System.out.println(commitOpt.get("q"));
 
-	public boolean isCheck_over_limits() {
-		return check_over_limits;
+				if (!searchCommit.isCheck_over_limits())
+					pages++;
+				
+			}
+			
+			cmdOptions.changeCommitDate(commitOpt, searchCommit.getLast_date());
+			pages = 1;
+		}
 	}
-
-	public String getLast_date() {
-		return last_date;
-	}
-	
 }

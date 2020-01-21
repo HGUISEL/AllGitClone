@@ -25,6 +25,7 @@ public class RepoActivity {
 	private String last_date = null;			//standard
 	private ArrayList<String> repoResult = null;
 	
+	
 	public RepoActivity() {
 		repoResult = new ArrayList<>();
 		RetroBasic new_object = new RetroBasic();
@@ -61,14 +62,10 @@ public class RepoActivity {
 			
 			for (int i = 0; i < json_com.size(); i++) {
 				JsonObject item = new Gson().fromJson(json_com.get(i), JsonObject.class);
-				String line = item.get("html_url") + "\n" +
-							item.get("description") + "\n" +
-							item.get("forks") + "\n" +
-							item.get("pushed_at") + "\n\n";
+				String line = item.get("html_url") + "\n";
 				
 				System.out.println(line);
-				//repoResult.add(item.get("html_url").getAsString());
-				
+				repoResult.add(item.get("html_url").getAsString());
 				
 				if (i == json_com.size() - 1)
 					last_date = item.get("pushed_at").getAsString();
@@ -80,6 +77,7 @@ public class RepoActivity {
 			ex.printStackTrace();
 		}
 	}
+	
 	
 
 	public boolean isCheck_blank() {

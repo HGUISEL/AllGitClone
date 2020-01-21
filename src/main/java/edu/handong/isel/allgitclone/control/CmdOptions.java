@@ -84,9 +84,12 @@ public class CmdOptions {
 	}
 	
 	
+	
 	public HashMap<String, String> getRepoOpt() {
 		return repoOpt;
 	}
+	
+	
 	
 	public HashMap<String, String> getCommitOpt() {
 		return commitOpt;
@@ -143,7 +146,7 @@ public class CmdOptions {
 			
 		
 		if (!authorDate.isBlank())
-			commit_opt += " author-date:" + authorDate;
+			commit_opt += "author-date:" + authorDate;
 		
 		
 		if (!committerDate.isBlank())

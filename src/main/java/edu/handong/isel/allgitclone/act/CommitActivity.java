@@ -24,6 +24,7 @@ public class CommitActivity {
 	private String last_date = null;			//standard
 	private ArrayList<String> commitResult = null;
 	
+	
 	public CommitActivity() {
 		commitResult = new ArrayList<>();
 		RetroBasic new_object = new RetroBasic();
