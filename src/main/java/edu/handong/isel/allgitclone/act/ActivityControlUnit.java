@@ -21,13 +21,13 @@ public class ActivityControlUnit {
 		 * First work : search repositories
 		 */
 		
-		RepoActivity searchRepo = new RepoActivity();
+		RepoActivity searchRepo = new RepoActivity(cmdOptions.getAuthToken());
 		
 		while(!searchRepo.isCheck_blank()) {
 			
 			while (pages != 11 && !searchRepo.isCheck_blank()) {
 				
-				//random sleep time to 1~3 sec
+				//random sleep time to 1~3s
 				dValue = Math.random();
 				iValue = (int)(dValue * 2000) + 1;
 				Thread.sleep(iValue);
@@ -44,10 +44,12 @@ public class ActivityControlUnit {
 				
 			}
 			
-			cmdOptions.changeUpdate(repoOpt, searchRepo.getLast_date());
+			cmdOptions.changeRepoUpdate(repoOpt, searchRepo.getLast_date());
 			pages = 1;
 		}
 		
+		
+		System.out.println(searchRepo.getRepoResult().size() + " results are stored.\n");
 		
 		
 		//If there is no option for commit searching query, the program is exit. 
@@ -56,20 +58,18 @@ public class ActivityControlUnit {
 			return;
 		}
 		
-		
-		
 		/*
 		 * Second work : search commit
 		 */
 		
-		CommitActivity searchCommit = new CommitActivity();
+		CommitActivity searchCommit = new CommitActivity(searchRepo.getRepoResult(), cmdOptions.getAuthToken());
 		pages = 1;
 		
 		while(!searchCommit.isCheck_blank()) {
 			
 			while (pages != 11 && !searchCommit.isCheck_blank()) {
 				
-				//random sleep time to 1~3 sec
+				//random sleep time to 1~3s
 				dValue = Math.random();
 				iValue = (int)(dValue * 2000) + 1;
 				Thread.sleep(iValue);
@@ -86,7 +86,7 @@ public class ActivityControlUnit {
 				
 			}
 			
-			cmdOptions.changeCommitDate(commitOpt, searchCommit.getLast_date());
+			cmdOptions.changeCommitUpdate(commitOpt, searchCommit.getLast_date());
 			pages = 1;
 		}
 	}

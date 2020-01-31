@@ -16,6 +16,7 @@ public class CmdOptions {
 	private String recentDate;
 	private String authorDate;
 	private String committerDate;
+	private String authToken;
 	private boolean help;
 	private HashMap<String, String> repoOpt;
 	private HashMap<String, String> commitOpt;
@@ -34,13 +35,12 @@ public class CmdOptions {
 			
 			RefiningOpt();
 		}
-		
 	}
 	
 	
 	
 	//Consider the standard query date, how to change the value to reference all repos.
-	public void changeUpdate(HashMap<String, String> options, String last_pushed) {
+	public void changeRepoUpdate(HashMap<String, String> options, String last_pushed) {
 		String chg = options.get("q");
 		String changed_date = last_pushed.substring(0, last_pushed.indexOf('T'));
 			
@@ -58,20 +58,16 @@ public class CmdOptions {
 	
 	
 	
-	public void changeCommitDate(HashMap<String, String> options, String last_date) {
+	public void changeCommitUpdate(HashMap<String, String> options, String last_date) {
 		String chg = options.get("q");
 		String changed_date = last_date.substring(0, last_date.indexOf('T'));
-		
+		  
 		if (chg.contains("author-date")) {
 			String origin_date = chg.substring(chg.length() - 10, chg.length());
 			
-			/*
-			 * if the changed date is same as right before
-			 * change twice to increase day
-			 * 
-			 */
+			
 			if (origin_date.equals(changed_date))
-				changed_date = changeDay(changed_date);
+				changed_date = modifyIfSame(changed_date);
 			
 			
 			chg = chg.replace(origin_date, changed_date);
@@ -91,13 +87,19 @@ public class CmdOptions {
 	
 	
 	
+	public String getAuthToken() {
+		return authToken;
+	}
+
+
+
 	public HashMap<String, String> getCommitOpt() {
 		return commitOpt;
 	}
 	
 	
 	
-	private String changeDay(String date) {
+	private String modifyIfSame(String date) {
 		int year = Integer.parseInt(date.substring(0, 4));
 		int month = Integer.parseInt(date.substring(5, 7));
 		String day = date.substring(8, 10);
@@ -124,7 +126,8 @@ public class CmdOptions {
 	
 	
 	
-	/*	language, fork, pushed : searching repositories
+	/*	
+	 *  language, fork, pushed : searching repositories
 	 * 	author-date, committer-date : searching commits
 	 */
 	
@@ -167,7 +170,7 @@ public class CmdOptions {
 			repoOpt.put("order", "asc");
 		
 		
-		if (authorDate.contains(">=") || authorDate.contains(">="))
+		if (authorDate.contains(">="))
 			commitOpt.put("order", "asc");
 		
 	}
@@ -215,6 +218,11 @@ public class CmdOptions {
 											.argName("committer date")
 											.build());
 		
+		options.addOption(Option.builder("auth").desc("Set authentication token")
+											.hasArg()
+											.argName("authentication token")
+											.build());
+		
 		return options;
 	}
 	
@@ -237,6 +245,7 @@ public class CmdOptions {
 			recentDate = cmd.getOptionValue("d", "");
 			authorDate = cmd.getOptionValue("ad", "");
 			committerDate = cmd.getOptionValue("cd", "");
+			authToken = cmd.getOptionValue("auth", "");
 			help = cmd.hasOption("h");
 			
 		}catch (Exception e) {

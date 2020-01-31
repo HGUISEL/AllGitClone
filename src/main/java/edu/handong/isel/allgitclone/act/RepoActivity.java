@@ -1,17 +1,16 @@
 package edu.handong.isel.allgitclone.act;
 
 import java.io.BufferedWriter;
+
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import edu.handong.isel.allgitclone.control.GithubService;
-import edu.handong.isel.allgitclone.control.RetroBasic;
+import edu.handong.isel.allgitclone.control.*;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -23,13 +22,13 @@ public class RepoActivity {
 	private boolean check_blank = false;
 	private boolean check_over_limits = false;		//indicate which the page is over 10 or not.
 	private String last_date = null;			//standard
-	private ArrayList<String> repoResult = null;
+	private HashSet<String> repoResult = null;
 	
 	
-	public RepoActivity() {
-		repoResult = new ArrayList<>();
+	public RepoActivity(String token) {
+		repoResult = new HashSet<>();
 		RetroBasic new_object = new RetroBasic();
-		new_object.createObject();
+		new_object.createObject(token);
 		retrofit = new_object.getObject();
 	}
 	
@@ -80,6 +79,11 @@ public class RepoActivity {
 	
 	
 
+	public HashSet<String> getRepoResult() {
+		return repoResult;
+	}
+
+
 	public boolean isCheck_blank() {
 		return check_blank;
 	}
@@ -93,6 +97,5 @@ public class RepoActivity {
 	public String getLast_date() {
 		return last_date;
 	}
-	
 	
 }

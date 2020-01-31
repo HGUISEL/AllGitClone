@@ -25,7 +25,7 @@ public class IssueActivity {
 	
 	public IssueActivity() {
 		RetroBasic new_object = new RetroBasic();
-		new_object.createObject();
+		//new_object.createObject();
 		retrofit = new_object.getObject();
 	}
 	
