@@ -9,7 +9,7 @@
 Call<JsonObject> getJavaRepositories(@QueryMap Map<String, String> lang);
 ```
 
-  - query to search (ex: api.github.com/search/repositories?q=language:java)
+  - query to search (ex: api.github.com/search/repositories?q=language:java)  
 
 
 ## Declaration to communicating object
@@ -18,13 +18,13 @@ Retrofit retro = new Retrofit.Builder()
                               .baseUrl(BASE_URL)
                               .addConverterFactory(GsonConverterFactory.create())
                               .build();
-```
+```  
 
 
 ## Which contents we have to get?
 >Search appropriate repos according to given options
 
->Base option : updated_at (last committed date of repo)
+>Base option : updated_at (last committed date of repo)  
 
 
 
@@ -35,7 +35,7 @@ Retrofit retro = new Retrofit.Builder()
 
 - -f  :  fork count (inequality sign, .. {range sign})  
 
-- -d  :  date (last pushed date)
+- -d  :  date (last pushed date)  
 
 
 
@@ -51,13 +51,13 @@ Retrofit retro = new Retrofit.Builder()
 
 
 
-I have a plan to add more possible options.
+I have a plan to add more possible options.  
 
 
 
 ## Example
 ```linux
-AllGitClone -l java -f 100..2000 -ad 2019-01-01..2020-01-01 -auth 'personal_token'
+AllGitClone -l java -f 100..2000 -ad 2019-01-01..2020-01-01 -auth 'personal_token'  
 ```
 
 This means that we can get a list of repositories, written in java, have fork counts greater than 100 and less than 2000,  
