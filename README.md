@@ -26,36 +26,26 @@ Retrofit retro = new Retrofit.Builder()
 >Base option : created_at (created date of repo)
 
 
-## How to divide many results using options?
-```java
-String lang = "java";
-String created = "2015-1-1";
-int pages = 1;
+## Available Options (2020-01-31 updated)
+> Repository option
+> -l  :  language (java, c, c++, apache, etc.)
+> -f  :  fork count (inequality sign, .. {range sign})
+> -d  :  date (last pushed date)
 
-//TODO (need loop funct)
-change_date(created);
-
-pages++;
-
-String query_options = "language:" + lang +
-                       " created:" + created;
-                       
-                       
-options.replace("q", query_options);
-
-//Option Query Map
-options.put("q", query_options);
-options.put("page", String.valueOf(pages));
-options.put("sort", "forks");
-options.put("per_page", String.valueOf(100));
-```
-
->Need to implement the function which changes date.
+> Commit option
+> ad  :  author-date (date that author committed most recently)
 
 
-## Multi-options
-> Need to gather informations to add another options like commit, repo size, etc.
+> Others
+> auth  :  authentication token (user's personal access token)
 
 
-## Result
-> Repo URL that meets given criteria
+> I have a plan to add more possible options.
+
+
+## Example
+> AllGitClone -l java -f 100..2000 -ad 2019-01-01..2020-01-01 -auth 'personal_token'
+
+> This means that we can get a list of repositories, written in java, have fork counts greater than 100 and less than 2000,
+> and whose last committed date is 2019-01-01 to 2020-01-01, using personal authentication token.
+
