@@ -14,7 +14,7 @@ import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 
 public interface GithubService {
-	//https://api.github.com/repos/userName/repoName/commits
+	
 	@Headers("Accept: application/vnd.github.cloak-preview")
 	@GET("search/commits")
 	Call<JsonObject> getUserCommits(@QueryMap Map<String, String> lang);
