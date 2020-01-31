@@ -1,5 +1,5 @@
 # AllGitClone
->A tool which helps to get various url of github repositories what user wants.
+>A tool which helps to get various url of github repositories what user wants.  
 
 
 ## Retrofit + OkHttp
@@ -31,23 +31,23 @@ Retrofit retro = new Retrofit.Builder()
 ## Available Options (2020-01-31 updated)
 > Repository option
 
-> -l  :  language (java, c, c++, apache, etc.)
+- -l  :  language (java, c, c++, apache, etc.)  
 
-> -f  :  fork count (inequality sign, .. {range sign})
+- -f  :  fork count (inequality sign, .. {range sign})  
 
-> -d  :  date (last pushed date)
+- -d  :  date (last pushed date)
 
 
 
 > Commit option
 
-> ad  :  author-date (date that author committed most recently)
+- -ad  :  author-date (date that author committed most recently)  
 
 
 
 > Others
 
-> auth  :  authentication token (user's personal access token)
+- -auth  :  authentication token (user's personal access token)  
 
 
 
@@ -60,7 +60,7 @@ I have a plan to add more possible options.
 AllGitClone -l java -f 100..2000 -ad 2019-01-01..2020-01-01 -auth 'personal_token'
 ```
 
-This means that we can get a list of repositories, written in java, have fork counts greater than 100 and less than 2000,
+This means that we can get a list of repositories, written in java, have fork counts greater than 100 and less than 2000,  
 
 and whose last committed date is 2019-01-01 to 2020-01-01, using personal authentication token.
 
