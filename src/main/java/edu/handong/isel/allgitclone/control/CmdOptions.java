@@ -67,7 +67,7 @@ public class CmdOptions {
 			
 			
 			if (origin_date.equals(changed_date))
-				changed_date = modifyIfSame(changed_date);
+				changed_date = modifyIfSame(chg, changed_date);
 			
 			
 			chg = chg.replace(origin_date, changed_date);
@@ -99,26 +99,41 @@ public class CmdOptions {
 	
 	
 	
-	private String modifyIfSame(String date) {
+	private String modifyIfSame(String query, String date) {
 		int year = Integer.parseInt(date.substring(0, 4));
 		int month = Integer.parseInt(date.substring(5, 7));
 		String day = date.substring(8, 10);
 		String returnDate;
 		
-		if (month == 12) {
-			year++;
-			month = 1;
+		if (query.contains(">=")) {
+			if (month == 12) {
+				year++;
+				month = 1;
+			} else
+				month++;
+		
+		
+			if (month < 10)
+				returnDate = year + "-0" + month + "-" + day;
+		
+			else
+				returnDate = year + "-" + month + "-" + day;
 		}
 		
-		else
-			month++;
+		else {
+			if (month == 1) {
+				year--;
+				month = 12;
+			} else
+				month--;
 		
 		
-		if (month < 10)
-			returnDate = year + "-0" + month + "-" + day;
+			if (month < 10)
+				returnDate = year + "-0" + month + "-" + day;
 		
-		else
-			returnDate = year + "-" + month + "-" + day;
+			else
+				returnDate = year + "-" + month + "-" + day;
+		}
 		
 		return returnDate;
 	}

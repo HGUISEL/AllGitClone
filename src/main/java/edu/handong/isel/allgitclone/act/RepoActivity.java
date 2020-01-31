@@ -61,10 +61,10 @@ public class RepoActivity {
 			
 			for (int i = 0; i < json_com.size(); i++) {
 				JsonObject item = new Gson().fromJson(json_com.get(i), JsonObject.class);
-				String line = item.get("html_url") + "\n";
+				String line = item.get("full_name") + "\n";
 				
 				System.out.println(line);
-				repoResult.add(item.get("html_url").getAsString());
+				repoResult.add(item.get("full_name").getAsString());
 				
 				if (i == json_com.size() - 1)
 					last_date = item.get("pushed_at").getAsString();

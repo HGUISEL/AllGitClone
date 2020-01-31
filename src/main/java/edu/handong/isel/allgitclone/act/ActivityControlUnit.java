@@ -1,8 +1,10 @@
 package edu.handong.isel.allgitclone.act;
 
 import java.io.BufferedWriter;
+
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import edu.handong.isel.allgitclone.control.CmdOptions;
 
@@ -12,6 +14,7 @@ public class ActivityControlUnit {
 	public void run(CmdOptions cmdOptions, BufferedWriter bw, PrintWriter pw) throws InterruptedException {
 		HashMap<String, String> repoOpt = cmdOptions.getRepoOpt();
 		HashMap<String, String> commitOpt = cmdOptions.getCommitOpt();
+		
 		double dValue;
 		int iValue;
 		int pages = 1;
@@ -22,6 +25,7 @@ public class ActivityControlUnit {
 		 */
 		
 		RepoActivity searchRepo = new RepoActivity(cmdOptions.getAuthToken());
+		HashSet<String> repoResult = searchRepo.getRepoResult();
 		
 		while(!searchRepo.isCheck_blank()) {
 			
@@ -49,45 +53,42 @@ public class ActivityControlUnit {
 		}
 		
 		
-		System.out.println(searchRepo.getRepoResult().size() + " results are stored.\n");
+		System.out.println(repoResult.size() + " results are stored.\n");
 		
-		
-		//If there is no option for commit searching query, the program is exit. 
-		if (cmdOptions.getCommitOpt().get("q").isBlank()) {
-			System.out.println("As there is no option for commit query, the search is end up.");
-			return;
-		}
 		
 		/*
 		 * Second work : search commit
 		 */
 		
-		CommitActivity searchCommit = new CommitActivity(searchRepo.getRepoResult(), cmdOptions.getAuthToken());
+		CommitActivity searchCommit = new CommitActivity(cmdOptions.getAuthToken());
 		pages = 1;
 		
-		while(!searchCommit.isCheck_blank()) {
+		String originQuery = "";
+		
+		for (String query : repoResult)  {
 			
-			while (pages != 11 && !searchCommit.isCheck_blank()) {
-				
-				//random sleep time to 1~3s
-				dValue = Math.random();
-				iValue = (int)(dValue * 2000) + 1;
-				Thread.sleep(iValue);
-				
-				commitOpt.replace("page", String.valueOf(pages));
-				
-				searchCommit.start(bw, pw, commitOpt);
-				
-				System.out.println("current page : " + pages);
-				System.out.println(commitOpt.get("q"));
-
-				if (!searchCommit.isCheck_over_limits())
-					pages++;
-				
+			dValue = Math.random();
+			iValue = (int)(dValue * 2000) + 1;
+			Thread.sleep(iValue);
+			
+			if (!searchCommit.isCheck_over_limits()) {
+			
+				if (!commitOpt.get("q").contains("repo:")) {
+					commitOpt.replace("q", commitOpt.get("q") + " repo:" + query);
+					originQuery = query;
+				}
+			
+				else {
+					String base = commitOpt.get("q");
+					base = base.replace(originQuery, query);
+					commitOpt.replace("q", base);
+					originQuery = query;
+				}
 			}
 			
-			cmdOptions.changeCommitUpdate(commitOpt, searchCommit.getLast_date());
-			pages = 1;
+			searchCommit.start(bw, pw, commitOpt);
+			System.out.println(commitOpt.get("q") + "\n");
+			
 		}
 	}
 }

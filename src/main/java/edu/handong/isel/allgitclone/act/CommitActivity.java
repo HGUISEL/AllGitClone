@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 
 import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.HashSet;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -23,13 +22,9 @@ public class CommitActivity {
 	private boolean check_blank = false;
 	private boolean check_over_limits = false;		//indicate which the page is over 10 or not.
 	private String last_date = null;			//standard
-	private HashSet<String> commitResult = null;
-	private HashSet<String> repoResult = null;
+
 	
-	
-	public CommitActivity(HashSet<String> repoResult, String token) {
-		this.repoResult = repoResult;
-		commitResult = new HashSet<>();
+	public CommitActivity(String token) {
 		RetroBasic new_object = new RetroBasic();
 		new_object.createObject(token);
 		retrofit = new_object.getObject();
@@ -62,6 +57,7 @@ public class CommitActivity {
 				return;
 			}
 			
+			
 			for (int i = 0; i < json_com.size(); i++) {
 				JsonObject item = new Gson().fromJson(json_com.get(i), JsonObject.class);
 				JsonObject commits = new Gson().fromJson(item.get("commit"), JsonObject.class);
@@ -71,12 +67,7 @@ public class CommitActivity {
 				
 				System.out.println(repo.get("html_url"));
 				System.out.println(author.get("date") + "\n");
-				commitResult.add(repo.get("html_url").getAsString());
-					
-				if (repoResult.contains(repo.get("html_url").getAsString())) {
-					pw.write(repo.get("html_url").getAsString() + "\n");
-					pw.flush();
-				}
+				
 				
 				if (i == json_com.size() - 1)
 					last_date = author.get("date").getAsString();
