@@ -93,7 +93,7 @@ public class ActivityControlUnit {
 		
 		
 		for (String result : finalResult) {
-			pw.write(result);
+			pw.write(result + "\n");
 			pw.flush();
 		}
 		
