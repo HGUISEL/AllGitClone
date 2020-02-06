@@ -21,10 +21,8 @@ Retrofit retro = new Retrofit.Builder()
 ```  
 
 
-## Which contents we have to get?
->Search appropriate repos according to given options
-
->Base option : updated_at (last committed date of repo)  
+## Overview
+![relation chart](https://user-images.githubusercontent.com/49176685/73900207-5edb8c00-48d2-11ea-876d-3e4832ef579e.png)
 
 
 
