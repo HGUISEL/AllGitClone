@@ -24,10 +24,9 @@ public class RetroMain {
 		PrintWriter pw = new PrintWriter(bw, true);
 		
 		ActivityControlUnit unit = new ActivityControlUnit();
-		unit.run(cmdOptions, bw, pw);
+		unit.run(cmdOptions, pw);
 	
 		return;
 		
 	}
-	
 }

@@ -1,7 +1,5 @@
 package edu.handong.isel.allgitclone.act;
 
-import java.io.BufferedWriter;
-
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,9 +9,10 @@ import edu.handong.isel.allgitclone.control.CmdOptions;
 
 public class ActivityControlUnit {
 
-	public void run(CmdOptions cmdOptions, BufferedWriter bw, PrintWriter pw) throws InterruptedException {
+	public void run(CmdOptions cmdOptions, PrintWriter pw) throws InterruptedException {
 		HashMap<String, String> repoOpt = cmdOptions.getRepoOpt();
 		HashMap<String, String> commitOpt = cmdOptions.getCommitOpt();
+		HashSet<String> finalResult = new HashSet<>();
 		
 		double dValue;
 		int iValue;
@@ -38,7 +37,7 @@ public class ActivityControlUnit {
 				
 				repoOpt.replace("page", String.valueOf(pages));
 				
-				searchRepo.start(bw, pw, repoOpt);
+				searchRepo.start(repoOpt);
 				
 				System.out.println("current page : " + pages);
 				System.out.println(repoOpt.get("q"));
@@ -61,6 +60,8 @@ public class ActivityControlUnit {
 		 */
 		
 		CommitActivity searchCommit = new CommitActivity(cmdOptions.getAuthToken());
+		
+		
 		pages = 1;
 		
 		String originQuery = "";
@@ -77,7 +78,7 @@ public class ActivityControlUnit {
 					commitOpt.replace("q", commitOpt.get("q") + " repo:" + query);
 					originQuery = query;
 				}
-			
+
 				else {
 					String base = commitOpt.get("q");
 					base = base.replace(originQuery, query);
@@ -86,9 +87,16 @@ public class ActivityControlUnit {
 				}
 			}
 			
-			searchCommit.start(bw, pw, commitOpt);
-			System.out.println(commitOpt.get("q") + "\n");
-			
+			searchCommit.start(commitOpt, finalResult);
+			  
 		}
+		
+		
+		for (String result : finalResult) {
+			pw.write(result);
+			pw.flush();
+		}
+		
+		System.out.println("All results are stored in CommitResult.csv");
 	}
 }

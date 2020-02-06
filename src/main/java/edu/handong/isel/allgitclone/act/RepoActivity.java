@@ -1,8 +1,5 @@
 package edu.handong.isel.allgitclone.act;
 
-import java.io.BufferedWriter;
-
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -33,7 +30,7 @@ public class RepoActivity {
 	}
 	
 	
-	public void start (BufferedWriter bw, PrintWriter pw, HashMap<String, String> repoOption) {
+	public void start (HashMap<String, String> repoOption) {
 		GithubService service = retrofit.create(GithubService.class);
 		Call<JsonObject> request = service.getJavaRepositories(repoOption);
 	
@@ -61,10 +58,7 @@ public class RepoActivity {
 			
 			for (int i = 0; i < json_com.size(); i++) {
 				JsonObject item = new Gson().fromJson(json_com.get(i), JsonObject.class);
-				String line = item.get("full_name") + "\n";
-				
-				System.out.println(line);
-				repoResult.add(item.get("full_name").getAsString());
+				repoResult.add(item.get("full_name").getAsString());			
 				
 				if (i == json_com.size() - 1)
 					last_date = item.get("pushed_at").getAsString();

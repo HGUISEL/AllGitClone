@@ -1,9 +1,9 @@
 package edu.handong.isel.allgitclone.act;
 
-import java.io.BufferedWriter;
 
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -22,8 +22,8 @@ public class CommitActivity {
 	private boolean check_blank = false;
 	private boolean check_over_limits = false;		//indicate which the page is over 10 or not.
 	private String last_date = null;			//standard
-
 	
+
 	public CommitActivity(String token) {
 		RetroBasic new_object = new RetroBasic();
 		new_object.createObject(token);
@@ -31,7 +31,7 @@ public class CommitActivity {
 	}
 	
 	
-	public void start (BufferedWriter bw, PrintWriter pw, HashMap<String, String> commitOption) {
+	public void start (HashMap<String, String> commitOption, HashSet<String> finalResult) {
 		GithubService service = retrofit.create(GithubService.class);
 		Call<JsonObject> request = service.getUserCommits(commitOption);
 		
@@ -52,7 +52,6 @@ public class CommitActivity {
 			JsonArray json_com = new Gson().fromJson(response.body().get("items"), JsonArray.class);
 			
 			if (json_com.size() == 0) {
-				System.out.println("There is no content ever.");
 				check_blank = true;
 				return;
 			}
@@ -64,18 +63,12 @@ public class CommitActivity {
 				JsonObject author = new Gson().fromJson(commits.get("author"), JsonObject.class);
 				JsonObject repo = new Gson().fromJson(item.get("repository"), JsonObject.class);
 				
-				
-				System.out.println(repo.get("html_url"));
-				System.out.println(author.get("date") + "\n");
-				
+				finalResult.add(repo.get("html_url").getAsString());
 				
 				if (i == json_com.size() - 1)
 					last_date = author.get("date").getAsString();
 
 			}
-			
-			System.out.println(response.body().get("total_count"));
-			System.out.println("100 result successful");
 			
 		}
 		
@@ -84,7 +77,6 @@ public class CommitActivity {
 		}
 	}
 
-	
 	public boolean isCheck_blank() {
 		return check_blank;
 	}
