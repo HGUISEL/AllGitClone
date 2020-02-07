@@ -1,16 +1,13 @@
 package edu.handong.isel.allgitclone.act;
 
 import java.io.BufferedWriter;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.ParseException;
-import java.util.HashMap;
 
 import edu.handong.isel.allgitclone.act.ActivityControlUnit;
-import edu.handong.isel.allgitclone.act.CommitActivity;
-import edu.handong.isel.allgitclone.act.RepoActivity;
 import edu.handong.isel.allgitclone.control.CmdOptions;
 
 public class RetroMain {
