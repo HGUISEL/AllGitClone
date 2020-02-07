@@ -17,6 +17,8 @@ public class RetroMain {
 	
 	public static void main (String[] args) throws IOException, InterruptedException {
 		
+		long starter = System.currentTimeMillis();
+		
 		CmdOptions cmdOptions = new CmdOptions(args);
 
 		
@@ -26,6 +28,11 @@ public class RetroMain {
 		ActivityControlUnit unit = new ActivityControlUnit();
 		unit.run(cmdOptions, pw);
 	
+		
+		long end = System.currentTimeMillis();
+		
+		System.out.println("The time required : " + (end - starter)/1000.0);
+		
 		return;
 		
 	}
