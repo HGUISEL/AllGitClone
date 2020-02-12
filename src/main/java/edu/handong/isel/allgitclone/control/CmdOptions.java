@@ -12,10 +12,9 @@ import org.apache.commons.cli.Options;
 public class CmdOptions {
 	
 	private String lang;
-	private String forkCount;
+	private String forks;
 	private String recentDate;
 	private String authorDate;
-	private String committerDate;
 	private String authToken;
 	private boolean help;
 	private HashMap<String, String> repoOpt;
@@ -33,7 +32,7 @@ public class CmdOptions {
 				return;
 			}
 			
-			RefiningOpt();
+			defineOpt();
 		}
 	}
 	
@@ -78,26 +77,7 @@ public class CmdOptions {
 		
 		options.replace("q", chg);
 	}
-	
-	
-	
-	public HashMap<String, String> getRepoOpt() {
-		return repoOpt;
-	}
-	
-	
-	
-	public String getAuthToken() {
-		return authToken;
-	}
 
-
-
-	public HashMap<String, String> getCommitOpt() {
-		return commitOpt;
-	}
-	
-	
 	
 	private String modifyIfSame(String query, String date) {
 		int year = Integer.parseInt(date.substring(0, 4));
@@ -146,17 +126,17 @@ public class CmdOptions {
 	 * 	author-date, committer-date : searching commits
 	 */
 	
-	private void RefiningOpt() {
+	private void defineOpt() {
 		
 		String repo_opt = "";
 		String commit_opt = "";
 		
-		if (!lang.isBlank())
+		if (!lang.trim().isEmpty())
 			repo_opt += "language:" + lang;
 		
 		
-		if (!forkCount.isBlank())
-			repo_opt += " forks:" + forkCount;
+		if (!forks.isBlank())
+			repo_opt += " forks:" + forks;
 		
 		
 		if (!recentDate.isBlank())
@@ -165,21 +145,17 @@ public class CmdOptions {
 		
 		if (!authorDate.isBlank())
 			commit_opt += "author-date:" + authorDate;
-		
-		
-		if (!committerDate.isBlank())
-			commit_opt += " committer-date:" + committerDate;
-		
+	
 		
 		repoOpt.put("q", repo_opt);
 		repoOpt.put("sort", "updated");
-		repoOpt.put("page", String.valueOf(1));
-		repoOpt.put("per_page", String.valueOf(100));
+		repoOpt.put("page", "1");
+		repoOpt.put("per_page", "100");
 		
 		commitOpt.put("q", commit_opt);
 		commitOpt.put("sort", "author-date");
-		commitOpt.put("page", String.valueOf(1));
-		commitOpt.put("per_page", String.valueOf(100));
+		commitOpt.put("page", "1");
+		commitOpt.put("per_page", "100");
 		
 		if (recentDate.contains(">="))
 			repoOpt.put("order", "asc");
@@ -215,23 +191,12 @@ public class CmdOptions {
 											.build());
 		
 		
-		options.addOption(Option.builder("lb").longOpt("label")
-											.desc("Search pull request & issues using labels")
-											.hasArg()
-											.argName("label setting")
-											.build());
-		
 		options.addOption(Option.builder("ad").longOpt("adate")
 											.desc("Set commit author-date")
 											.hasArg()
 											.argName("author date")
 											.build());
 		
-		options.addOption(Option.builder("cd").longOpt("cdate")
-											.desc("Set commit committer-date")
-											.hasArg()
-											.argName("committer date")
-											.build());
 		
 		options.addOption(Option.builder("auth").desc("Set authentication token")
 											.hasArg()
@@ -256,10 +221,9 @@ public class CmdOptions {
 		try {
 			CommandLine cmd = parser.parse(options, args);
 			lang = cmd.getOptionValue("l", "");
-			forkCount = cmd.getOptionValue("f", "");
+			forks = cmd.getOptionValue("f", "");
 			recentDate = cmd.getOptionValue("d", "");
 			authorDate = cmd.getOptionValue("ad", "");
-			committerDate = cmd.getOptionValue("cd", "");
 			authToken = cmd.getOptionValue("auth", "");
 			help = cmd.hasOption("h");
 			
@@ -269,5 +233,21 @@ public class CmdOptions {
 		}
 		
 		return true;
+	}
+	
+	
+	
+	public HashMap<String, String> getRepoOpt() {
+		return repoOpt;
+	}
+	
+	
+	public String getAuthToken() {
+		return authToken;
+	}
+	
+
+	public HashMap<String, String> getCommitOpt() {
+		return commitOpt;
 	}
 }

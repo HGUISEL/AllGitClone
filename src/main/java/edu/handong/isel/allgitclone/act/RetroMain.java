@@ -24,7 +24,6 @@ public class RetroMain {
 		
 		ActivityControlUnit unit = new ActivityControlUnit();
 		unit.run(cmdOptions, pw);
-	
 		
 		long end = System.currentTimeMillis();
 		

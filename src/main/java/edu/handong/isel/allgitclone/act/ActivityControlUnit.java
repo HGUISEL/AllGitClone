@@ -14,8 +14,8 @@ public class ActivityControlUnit {
 		HashMap<String, String> commitOpt = cmdOptions.getCommitOpt();
 		HashSet<String> finalResult = new HashSet<>();
 		
-		double dValue;
-		int iValue;
+		double dv;
+		int iv;
 		int pages = 1;
 		
 		
@@ -26,14 +26,14 @@ public class ActivityControlUnit {
 		RepoActivity searchRepo = new RepoActivity(cmdOptions.getAuthToken());
 		HashSet<String> repoResult = searchRepo.getRepoResult();
 		
-		while(!searchRepo.isCheck_blank()) {
+		while(!searchRepo.isBlank()) {
 			
-			while (pages != 11 && !searchRepo.isCheck_blank()) {
+			while (pages != 11 && !searchRepo.isBlank()) {
 				
 				//random sleep time to 1~3s
-				dValue = Math.random();
-				iValue = (int)(dValue * 2000) + 1;
-				Thread.sleep(iValue);
+				dv = Math.random();
+				iv = (int)(dv * 2000) + 1;
+				Thread.sleep(iv);
 				
 				repoOpt.replace("page", String.valueOf(pages));
 				
@@ -42,12 +42,12 @@ public class ActivityControlUnit {
 				System.out.println("current page : " + pages);
 				System.out.println(repoOpt.get("q"));
 
-				if (!searchRepo.isCheck_over_limits())
+				if (!searchRepo.isBlocked())
 					pages++;
 				
 			}
 			
-			cmdOptions.changeRepoUpdate(repoOpt, searchRepo.getLast_date());
+			cmdOptions.changeRepoUpdate(repoOpt, searchRepo.lastDate());
 			pages = 1;
 		}
 		
@@ -55,24 +55,24 @@ public class ActivityControlUnit {
 		System.out.println(repoResult.size() + " results are stored.\n");
 		
 		
+		
 		/*
 		 * Second work : search commit
 		 */
+	
 		
 		CommitActivity searchCommit = new CommitActivity(cmdOptions.getAuthToken());
-		
-		
+		String originQuery = "";
 		pages = 1;
 		
-		String originQuery = "";
-		
+	
 		for (String query : repoResult)  {
 			
-			dValue = Math.random();
-			iValue = (int)(dValue * 2000) + 1;
-			Thread.sleep(iValue);
+			dv = Math.random();
+			iv = (int)(dv * 2000) + 1;
+			Thread.sleep(iv);
 			
-			if (!searchCommit.isCheck_over_limits()) {
+			if (!searchCommit.isBlocked()) {
 			
 				if (!commitOpt.get("q").contains("repo:")) {
 					commitOpt.replace("q", commitOpt.get("q") + " repo:" + query);
@@ -91,6 +91,7 @@ public class ActivityControlUnit {
 			  
 		}
 		
+		System.out.println(finalResult.size() + " results are finally stored.\n");
 		
 		for (String result : finalResult) {
 			pw.write(result + "," + "\n");

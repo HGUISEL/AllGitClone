@@ -12,9 +12,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetroBasic {
 	
 	private Retrofit retrofit;
-	private static String BASE_URL = "https://api.github.com/";
+	private static final String BASE_URL = "https://api.github.com/";
 	
-	public void createObject(String token) {
+	public Retrofit createObject(String token) {
 		
 		if (!token.isBlank()) {
 			OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
@@ -46,9 +46,7 @@ public class RetroBasic {
 					.addConverterFactory(GsonConverterFactory.create())
 					.build();
 		}
-	}
-	
-	public Retrofit getObject() {
+		
 		return retrofit;
 	}
 	

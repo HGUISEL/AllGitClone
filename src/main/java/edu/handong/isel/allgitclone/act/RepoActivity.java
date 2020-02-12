@@ -15,18 +15,16 @@ import retrofit2.Retrofit;
 
 public class RepoActivity {
 
-	private static Retrofit retrofit = null;
-	private boolean check_blank = false;
-	private boolean check_over_limits = false;		//indicate which the page is over 10 or not.
-	private String last_date = null;			//standard
-	private HashSet<String> repoResult = null;
+	private Retrofit retrofit;
+	private boolean blank = false;
+	private boolean blocked = false;		//indicate which the page is over 10 or not.
+	private String lastDate;			//standard
+	private HashSet<String> repoResult;
 	
 	
 	public RepoActivity(String token) {
 		repoResult = new HashSet<>();
-		RetroBasic new_object = new RetroBasic();
-		new_object.createObject(token);
-		retrofit = new_object.getObject();
+		retrofit = new RetroBasic().createObject(token);
 	}
 	
 	
@@ -38,30 +36,30 @@ public class RepoActivity {
 			Response<JsonObject> response = request.execute();
 			
 			if (response.message().equals("Forbidden")) {
-				System.out.println("Request is being processed. Please wait.\n");
-				check_over_limits = true;
+				System.out.println("Repo : Waiting for request ...");
+				blocked = true;
 				return;
 			}
 			
 			else
-				check_over_limits = false;
+				blocked = false;
 			
 			
-			JsonArray json_com = new Gson().fromJson(response.body().get("items"), JsonArray.class);
+			JsonArray jsArr = new Gson().fromJson(response.body().get("items"), JsonArray.class);
 			
-			if (json_com.size() == 0) {
+			if (jsArr.size() == 0) {
 				System.out.println("There is no content ever.");
-				check_blank = true;
+				blank = true;
 				return;
 			}
 			
 			
-			for (int i = 0; i < json_com.size(); i++) {
-				JsonObject item = new Gson().fromJson(json_com.get(i), JsonObject.class);
+			for (int i = 0; i < jsArr.size(); i++) {
+				JsonObject item = new Gson().fromJson(jsArr.get(i), JsonObject.class);
 				repoResult.add(item.get("full_name").getAsString());			
 				
-				if (i == json_com.size() - 1)
-					last_date = item.get("pushed_at").getAsString();
+				if (i == jsArr.size() - 1)
+					lastDate = item.get("pushed_at").getAsString();
 			}
 			
 		}
@@ -78,18 +76,18 @@ public class RepoActivity {
 	}
 
 
-	public boolean isCheck_blank() {
-		return check_blank;
+	public boolean isBlank() {
+		return blank;
 	}
 
 
-	public boolean isCheck_over_limits() {
-		return check_over_limits;
+	public boolean isBlocked() {
+		return blocked;
 	}
 
 
-	public String getLast_date() {
-		return last_date;
+	public String lastDate() {
+		return lastDate;
 	}
 	
 }

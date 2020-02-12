@@ -12,7 +12,7 @@ plugins {
 }
 
 apply plugin: 'application'
-mainClassName = "edu.handong.isel.allgitclone.control.RetroMain"
+mainClassName = "edu.handong.isel.allgitclone.act.RetroMain"
 
 repositories {
     // Use jcenter for resolving your dependencies.
