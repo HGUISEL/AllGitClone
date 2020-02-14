@@ -15,6 +15,7 @@ public interface GithubService {
 	@GET("search/commits")
 	Call<JsonObject> getUserCommits(@QueryMap Map<String, String> lang);
 	
+	@Headers("Accept: application/vnd.github.mercy-preview+json")
 	@GET("search/repositories")
 	Call<JsonObject> getJavaRepositories(@QueryMap Map<String, String> lang);
 }

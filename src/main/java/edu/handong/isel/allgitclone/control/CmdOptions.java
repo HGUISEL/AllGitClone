@@ -38,7 +38,6 @@ public class CmdOptions {
 	
 	
 	
-	//Consider the standard query date, how to change the value to reference all repos.
 	public void changeRepoUpdate(HashMap<String, String> options, String last_pushed) {
 		String chg = options.get("q");
 		String changed_date = last_pushed.substring(0, last_pushed.indexOf('T'));
@@ -131,7 +130,7 @@ public class CmdOptions {
 		String repo_opt = "";
 		String commit_opt = "";
 		
-		if (!lang.trim().isEmpty())
+		if (!lang.isBlank())
 			repo_opt += "language:" + lang;
 		
 		
