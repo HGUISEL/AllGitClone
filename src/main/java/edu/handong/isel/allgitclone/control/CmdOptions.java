@@ -14,6 +14,7 @@ public class CmdOptions {
 	private String lang;
 	private String forks;
 	private String recentDate;
+	private String createDate;
 	private String authorDate;
 	private String authToken;
 	private boolean help;
@@ -44,6 +45,10 @@ public class CmdOptions {
 			
 		if (chg.contains("pushed")) {
 			String origin_date = chg.substring(chg.length() - 10, chg.length());
+			
+			if (origin_date.equals(changed_date))
+				changed_date = modifyIfSame(chg, changed_date);
+			
 			chg = chg.replace(origin_date, changed_date);
 		}
 			
@@ -138,6 +143,10 @@ public class CmdOptions {
 			repo_opt += " forks:" + forks;
 		
 		
+		if (!createDate.isBlank())
+			repo_opt += " created:" + createDate;
+		
+		
 		if (!recentDate.isBlank())
 			repo_opt += " pushed:" + recentDate;
 			
@@ -169,38 +178,52 @@ public class CmdOptions {
 	private Options createOpt() {
 		Options options = new Options();
 		
-		options.addOption(Option.builder("l").longOpt("language")
-											.desc("Set language to search repositories.")
-											.hasArg()
-											.argName("language setting")
-											.build());
+		options.addOption(Option.builder("l")
+				.longOpt("language")
+				.desc("Set language to search repositories.")
+				.hasArg()
+				.argName("language setting")
+				.build());
 		
 		
-		options.addOption(Option.builder("f").longOpt("fork")
-											.desc("Set the count of forks to range of repositories.")
-											.hasArg()
-											.argName("fork counts")
-											.build());
+		options.addOption(Option.builder("f")
+				.longOpt("fork")
+				.desc("Set the count of forks to range of repositories.")
+				.hasArg()
+				.argName("fork counts")
+				.build());
 		
 		
-		options.addOption(Option.builder("d").longOpt("date")
-											.desc("Set the date when the author pushed lately")
-											.hasArg()
-											.argName("recent push date")
-											.build());
+		options.addOption(Option.builder("d")
+				.longOpt("date")
+				.desc("Set the date when the author pushed lately")
+				.hasArg()
+				.argName("recent push date")
+				.build());
 		
 		
-		options.addOption(Option.builder("ad").longOpt("adate")
-											.desc("Set commit author-date")
-											.hasArg()
-											.argName("author date")
-											.build());
+		options.addOption(Option.builder("c")
+				.longOpt("create")
+				.desc("Set the date when the repository was created")
+				.hasArg()
+				.argName("created date")
+				.build());
 		
 		
-		options.addOption(Option.builder("auth").desc("Set authentication token")
-											.hasArg()
-											.argName("authentication token")
-											.build());
+		options.addOption(Option.builder("ad")
+				.longOpt("adate")
+				.desc("Set commit author-date")
+				.hasArg()
+				.argName("author date")
+				.build());
+		
+		
+		options.addOption(Option.builder("auth")
+				.desc("Set authentication token")
+				.hasArg()
+				.argName("authentication token")
+				.build());
+		
 		
 		return options;
 	}
@@ -221,6 +244,7 @@ public class CmdOptions {
 			CommandLine cmd = parser.parse(options, args);
 			lang = cmd.getOptionValue("l", "");
 			forks = cmd.getOptionValue("f", "");
+			createDate = cmd.getOptionValue("c","");
 			recentDate = cmd.getOptionValue("d", "");
 			authorDate = cmd.getOptionValue("ad", "");
 			authToken = cmd.getOptionValue("auth", "");
