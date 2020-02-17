@@ -1,6 +1,12 @@
 package edu.handong.isel.allgitclone.act;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -9,7 +15,7 @@ import edu.handong.isel.allgitclone.control.CmdOptions;
 
 public class ActivityControlUnit {
 
-	public void run(CmdOptions cmdOptions, PrintWriter pw) throws InterruptedException {
+	public void run(CmdOptions cmdOptions) throws InterruptedException, IOException {
 		HashMap<String, String> repoOpt = cmdOptions.getRepoOpt();
 		HashMap<String, String> commitOpt = cmdOptions.getCommitOpt();
 		HashSet<String> finalResult = new HashSet<>();
@@ -65,7 +71,8 @@ public class ActivityControlUnit {
 		String originQuery = "";
 		pages = 1;
 		
-	
+		int percent = 0;
+		
 		for (String query : repoResult)  {
 			
 			dv = Math.random();
@@ -85,13 +92,23 @@ public class ActivityControlUnit {
 					commitOpt.replace("q", base);
 					originQuery = query;
 				}
+				
+				System.out.println((percent / repoResult.size()) * 100.0 + "% work completed.");
+				percent++;
 			}
 			
 			searchCommit.start(commitOpt, finalResult);
-			  
 		}
 		
+		
 		System.out.println(finalResult.size() + " results are finally stored.\n");
+		
+		
+		Date today = new Date();
+		SimpleDateFormat curTime = new SimpleDateFormat("hh-mm-ss");
+		
+		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(curTime.format(today) + "Result.csv"), true));
+		PrintWriter pw = new PrintWriter(bw, true);
 		
 		for (String result : finalResult) {
 			pw.write(result + "," + "\n");
