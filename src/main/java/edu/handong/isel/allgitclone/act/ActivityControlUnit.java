@@ -71,7 +71,7 @@ public class ActivityControlUnit {
 		String originQuery = "";
 		pages = 1;
 		
-		int percent = 0;
+		double progress = 0, percentage = 0;
 		
 		for (String query : repoResult)  {
 			
@@ -93,8 +93,11 @@ public class ActivityControlUnit {
 					originQuery = query;
 				}
 				
-				System.out.println((percent / repoResult.size()) * 100.0 + "% work completed.");
-				percent++;
+				percentage = progress / repoResult.size() * 100.0;
+				
+				System.out.println(String.format("%.1f", percentage) + "% work completed.");
+				progress++;
+				
 			}
 			
 			searchCommit.start(commitOpt, finalResult);
