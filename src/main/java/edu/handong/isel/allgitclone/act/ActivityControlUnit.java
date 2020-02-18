@@ -102,7 +102,7 @@ public class ActivityControlUnit {
 			
 			else {
 				
-				while (!searchCommit.isBlocked()) {
+				while (searchCommit.isBlocked()) {
 					searchCommit.start(commitOpt, finalResult);
 					Thread.sleep(iv);
 				}
