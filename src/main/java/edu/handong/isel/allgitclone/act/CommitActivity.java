@@ -46,7 +46,7 @@ public class CommitActivity {
 			
 			JsonArray jsArr = new Gson().fromJson(response.body().get("items"), JsonArray.class);
 			
-			if (jsArr.size() < 10)
+			if (jsArr.size() < 5)
 				return;
 			
 			

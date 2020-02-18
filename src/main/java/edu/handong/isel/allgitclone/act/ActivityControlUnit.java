@@ -97,10 +97,17 @@ public class ActivityControlUnit {
 				
 				System.out.println(String.format("%.1f", percentage) + "% work completed.");
 				progress++;
-				
+				searchCommit.start(commitOpt, finalResult);
 			}
 			
-			searchCommit.start(commitOpt, finalResult);
+			else {
+				
+				while (!searchCommit.isBlocked()) {
+					searchCommit.start(commitOpt, finalResult);
+					Thread.sleep(iv);
+				}
+				
+			}
 		}
 		
 		
@@ -119,5 +126,6 @@ public class ActivityControlUnit {
 		}
 		
 		System.out.println("All results are stored in CommitResult.csv");
+		pw.close();
 	}
 }
