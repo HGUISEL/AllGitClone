@@ -43,7 +43,7 @@ public class CommitActivity {
 			else
 				blocked = false;
 			
-			
+			/*
 			JsonArray jsArr = new Gson().fromJson(response.body().get("items"), JsonArray.class);
 			
 			if (jsArr.size() < 5)
@@ -62,6 +62,9 @@ public class CommitActivity {
 					lastDate = author.get("date").getAsString();
 
 			}
+			*/
+			System.out.println(response.body().toString());
+			System.out.println(response.body().size());
 			
 		}
 		

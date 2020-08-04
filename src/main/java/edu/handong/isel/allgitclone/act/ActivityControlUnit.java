@@ -20,9 +20,18 @@ public class ActivityControlUnit {
 		HashMap<String, String> commitOpt = cmdOptions.getCommitOpt();
 		HashSet<String> finalResult = new HashSet<>();
 		
+		
+		// fields related to store file
+		SimpleDateFormat sd = new SimpleDateFormat( "MM-dd" );
+		Date time = new Date();
+		String today = sd.format(time);
+		String base_github = "https://github.com/";
+		
+		
 		double dv;
 		int iv;
 		int pages = 1;
+		
 		
 		
 		/*
@@ -58,14 +67,24 @@ public class ActivityControlUnit {
 		}
 		
 		
-		System.out.println(repoResult.size() + " results are stored.\n");
+		
+		
+		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(today + "_Repo_list.csv"), true));
+		PrintWriter pw = new PrintWriter(bw, true);
+		
+		for (String result : repoResult) {
+			pw.write(base_github + result + "," + "\n");
+			pw.flush();
+		}
+		
+		System.out.println(repoResult.size() + " results are stored in " + today + "_Repo_list.csv");
+		pw.close();
 		
 		
 		
 		/*
-		 * Second work : search commit
+		 * Second work : search commit (optional)
 		 */
-	
 		
 		CommitActivity searchCommit = new CommitActivity(cmdOptions.getAuthToken());
 		String originQuery = "";
@@ -112,20 +131,6 @@ public class ActivityControlUnit {
 		
 		
 		System.out.println(finalResult.size() + " results are finally stored.\n");
-		
-		
-		Date today = new Date();
-		SimpleDateFormat curTime = new SimpleDateFormat("hh-mm-ss");
-		
-		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(curTime.format(today) + "Result.csv"), true));
-		PrintWriter pw = new PrintWriter(bw, true);
-		
-		for (String result : finalResult) {
-			pw.write(result + "," + "\n");
-			pw.flush();
-		}
-		
-		System.out.println("All results are stored in CommitResult.csv");
-		pw.close();
+
 	}
 }

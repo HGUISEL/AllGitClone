@@ -12,7 +12,7 @@ import retrofit2.http.QueryMap;
 public interface GithubService {
 	
 	@Headers("Accept: application/vnd.github.cloak-preview")
-	@GET("search/commits")
+	@GET("repos/{owner}/{repo}/commits")
 	Call<JsonObject> getUserCommits(@QueryMap Map<String, String> lang);
 	
 	@Headers("Accept: application/vnd.github.mercy-preview+json")
