@@ -46,26 +46,6 @@ public class CommitActivity {
 			else
 				blocked = false;
 			
-			/*
-			JsonArray jsArr = new Gson().fromJson(response.body().get("items"), JsonArray.class);
-			
-			if (jsArr.size() < 5)
-				return;
-			
-			
-			for (int i = 0; i < jsArr.size(); i++) {
-				JsonObject item = new Gson().fromJson(jsArr.get(i), JsonObject.class);
-				JsonObject commits = new Gson().fromJson(item.get("commit"), JsonObject.class);
-				JsonObject author = new Gson().fromJson(commits.get("author"), JsonObject.class);
-				JsonObject repo = new Gson().fromJson(item.get("repository"), JsonObject.class);
-				
-				finalResult.add(repo.get("html_url").getAsString());
-				
-				if (i == jsArr.size() - 1)
-					lastDate = author.get("date").getAsString();
-
-			}
-			*/
 			
 			for (int i = 0; i < response.body().size(); i++) {
 				JsonObject total = new Gson().fromJson(response.body().get(i), JsonObject.class);
