@@ -25,17 +25,14 @@ Retrofit retro = new Retrofit.Builder()
 ## Available Options (2020-08-05 updated)
 > Option
 
-- -l  :  language (java, c, cpp, javascript, ruby, etc.)  <br />
-
-- -f  :  fork count (e.g., >=500, 10..200)  <br />
-
-- -d  :  last pushed date (same usage as above)  <br /><br />
-
-- -c  :  created date (same usage as above)  <br /><br />
-
-- -cb :  (optional) commit count (criteria of commit count, same usage as above)  <br /><br />
-
-- -auth : (optional) authentication token for Github user. (It allows to send more requests per minute.)  <br /><br /> 
+|Option|description|usage|
+|:-:|:-:|:-:|
+|-l|language (java, c, cpp, javascript, ruby, etc.)|-l java<br>-l c|
+|-f|fork count|-f >=500<br>-f 10..200|
+|-d|last pushed date|-d <=2020-08-15<br>-d 2019-01-01..2020-06-30|
+|-c|created date|-c >2019-12-31<br>-c 2019-01-01..2020-01-15|
+|-cb|(optional) commit count (criteria of commit count)|-cb >500<br>-cb <10|
+|-auth|(optional) authentication token for Github user. (It allows to send more requests per minute.)|-auth 'token'|
 
 
 
