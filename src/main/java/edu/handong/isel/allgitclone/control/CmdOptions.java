@@ -15,17 +15,17 @@ public class CmdOptions {
 	private String forks;
 	private String recentDate;
 	private String createDate;
-	private String authorDate;
 	private String authToken;
+	private String commitCountBase;
 	private boolean help;
 	private HashMap<String, String> repoOpt;
-	private HashMap<String, String> commitOpt;
+
 	
 
 	public CmdOptions (String[] args) {
 		Options options = createOpt();
 		repoOpt = new HashMap<>();
-		commitOpt = new HashMap<>();
+
 		
 		if (parseOptions(options, args)) {
 			if (help) {
@@ -59,28 +59,6 @@ public class CmdOptions {
 		
 	}
 	
-	
-	
-	public void changeCommitUpdate(HashMap<String, String> options, String last_date) {
-		String chg = options.get("q");
-		String changed_date = last_date.substring(0, last_date.indexOf('T'));
-		  
-		if (chg.contains("author-date")) {
-			String origin_date = chg.substring(chg.length() - 10, chg.length());
-			
-			
-			if (origin_date.equals(changed_date))
-				changed_date = modifyIfSame(chg, changed_date);
-			
-			
-			chg = chg.replace(origin_date, changed_date);
-		}
-		
-		else
-			chg += " author-date:<=" + changed_date;
-		
-		options.replace("q", chg);
-	}
 
 	
 	private String modifyIfSame(String query, String date) {
@@ -127,13 +105,12 @@ public class CmdOptions {
 	
 	/*	
 	 *  language, fork, pushed : searching repositories
-	 * 	author-date, committer-date : searching commits
+	 *  
 	 */
 	
 	private void defineOpt() {
 		
 		String repo_opt = "";
-		String commit_opt = "";
 		
 		if (!lang.isBlank())
 			repo_opt += "language:" + lang;
@@ -151,26 +128,14 @@ public class CmdOptions {
 			repo_opt += " pushed:" + recentDate;
 			
 		
-		if (!authorDate.isBlank())
-			commit_opt += "author-date:" + authorDate;
-	
-		
 		repoOpt.put("q", repo_opt);
 		repoOpt.put("sort", "updated");
 		repoOpt.put("page", "1");
 		repoOpt.put("per_page", "100");
 		
-		commitOpt.put("q", commit_opt);
-		commitOpt.put("sort", "author-date");
-		commitOpt.put("page", "1");
-		commitOpt.put("per_page", "100");
 		
 		if (recentDate.contains(">="))
 			repoOpt.put("order", "asc");
-		
-		
-		if (authorDate.contains(">="))
-			commitOpt.put("order", "asc");
 		
 	}
 	
@@ -210,11 +175,11 @@ public class CmdOptions {
 				.build());
 		
 		
-		options.addOption(Option.builder("ad")
-				.longOpt("adate")
-				.desc("Set commit author-date")
+		options.addOption(Option.builder("cb")
+				.longOpt("commit")
+				.desc("Set commit count")
 				.hasArg()
-				.argName("author date")
+				.argName("commit count")
 				.build());
 		
 		
@@ -246,7 +211,7 @@ public class CmdOptions {
 			forks = cmd.getOptionValue("f", "");
 			createDate = cmd.getOptionValue("c","");
 			recentDate = cmd.getOptionValue("d", "");
-			authorDate = cmd.getOptionValue("ad", "");
+			commitCountBase = cmd.getOptionValue("cb", "");
 			authToken = cmd.getOptionValue("auth", "");
 			help = cmd.hasOption("h");
 			
@@ -269,8 +234,8 @@ public class CmdOptions {
 		return authToken;
 	}
 	
-
-	public HashMap<String, String> getCommitOpt() {
-		return commitOpt;
+	
+	public String getCommitCountBase() {
+		return commitCountBase;
 	}
 }

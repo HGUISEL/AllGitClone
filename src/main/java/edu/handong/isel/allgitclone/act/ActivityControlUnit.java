@@ -17,7 +17,6 @@ public class ActivityControlUnit {
 
 	public void run(CmdOptions cmdOptions) throws InterruptedException, IOException {
 		HashMap<String, String> repoOpt = cmdOptions.getRepoOpt();
-		HashMap<String, String> commitOpt = cmdOptions.getCommitOpt();
 		HashSet<String> finalResult = new HashSet<>();
 		
 		
@@ -78,59 +77,73 @@ public class ActivityControlUnit {
 		}
 		
 		System.out.println(repoResult.size() + " results are stored in " + today + "_Repo_list.csv");
+		bw.close();
 		pw.close();
-		
 		
 		
 		/*
 		 * Second work : search commit (optional)
 		 */
-		
-		CommitActivity searchCommit = new CommitActivity(cmdOptions.getAuthToken());
-		String originQuery = "";
-		pages = 1;
-		
-		double progress = 0, percentage = 0;
-		
-		for (String query : repoResult)  {
+		if (!cmdOptions.getCommitCountBase().isBlank()) {
+			String range = cmdOptions.getCommitCountBase();
+			double progress = 0, percentage = 0;
+			int commitRange;
+			boolean excess = false;
 			
-			dv = Math.random();
-			iv = (int)(dv * 2000) + 1;
-			Thread.sleep(iv);
+			/**
+			 * The inequality sign is assumed to be at the forefront of the @param range
+			 */
+			if (range.contains("<") || range.contains(">")) {
+				
+				if (range.contains(">"))
+					excess = true;
+				
+				
+				commitRange = Integer.parseInt(range.substring(1, range.length()));
+			} else {
+				commitRange = Integer.parseInt(range);
+			}
 			
-			if (!searchCommit.isBlocked()) {
 			
-				if (!commitOpt.get("q").contains("repo:")) {
-					commitOpt.replace("q", commitOpt.get("q") + " repo:" + query);
-					originQuery = query;
+			CommitActivity searchCommit = new CommitActivity(cmdOptions.getAuthToken());
+			
+			
+			for (String query : repoResult)  {
+				dv = Math.random();
+				iv = (int)(dv * 2000) + 1;
+				Thread.sleep(iv);
+				
+				
+				if (!searchCommit.isBlocked()) {
+					percentage = progress / repoResult.size() * 100.0;
+					System.out.println(String.format("%.1f", percentage) + "% work completed.");
+					progress++;
+					searchCommit.start(commitRange, excess, query, finalResult);
 				}
-
+				
 				else {
-					String base = commitOpt.get("q");
-					base = base.replace(originQuery, query);
-					commitOpt.replace("q", base);
-					originQuery = query;
+					while (searchCommit.isBlocked()) {
+						Thread.sleep(iv);
+						searchCommit.start(commitRange, excess, query, finalResult);
+					}
+					
 				}
-				
-				percentage = progress / repoResult.size() * 100.0;
-				
-				System.out.println(String.format("%.1f", percentage) + "% work completed.");
-				progress++;
-				searchCommit.start(commitOpt, finalResult);
 			}
 			
-			else {
-				
-				while (searchCommit.isBlocked()) {
-					searchCommit.start(commitOpt, finalResult);
-					Thread.sleep(iv);
-				}
-				
+			
+			bw = new BufferedWriter(new FileWriter(new File(today + "__list.csv"), true));
+			pw = new PrintWriter(bw, true);
+			
+			for (String result : finalResult) {
+				String[] arr = result.split("#");
+				pw.write(base_github + arr[0] + "," + arr[1] + "," + "\n");
+				pw.flush();
 			}
+			
+			bw.close();
+			pw.close();
+			
+			System.out.println(finalResult.size() + " results are finally stored.\n");
 		}
-		
-		
-		System.out.println(finalResult.size() + " results are finally stored.\n");
-
 	}
 }

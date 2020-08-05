@@ -1,6 +1,5 @@
 package edu.handong.isel.allgitclone.act;
 
-import java.util.HashMap;
 import java.util.HashSet;
 
 import com.google.gson.Gson;
@@ -18,21 +17,24 @@ public class CommitActivity {
 	
 	private Retrofit retrofit;
 	private boolean blocked = false;		//indicate which the page is over 10 or not.
-	private String lastDate;			//standard
-	
+
 
 	public CommitActivity(String token) {
-		retrofit = new RetroBasic().createObject(token);
+		this.retrofit = new RetroBasic().createObject(token);
 	}
 	
 	
-	public void start (HashMap<String, String> commitOption, HashSet<String> finalResult) {
+	public void start (int range, boolean excessable, String owner_repo, HashSet<String> finalResult) {
+		String[] arr = owner_repo.split("\\/");
+		int yearlyCommit = 0;
+		
 		GithubService service = retrofit.create(GithubService.class);
-		Call<JsonObject> request = service.getUserCommits(commitOption);
+		Call<JsonArray> request = service.getUserCommits(arr[0], arr[1]);
 		
 		
 		try {
-			Response<JsonObject> response = request.execute();
+			System.out.println(request.toString());
+			Response<JsonArray> response = request.execute();
 			
 			if (response.message().equals("Forbidden")) {
 				System.out.println("Commit : Waiting for request ...");
@@ -63,9 +65,19 @@ public class CommitActivity {
 
 			}
 			*/
-			System.out.println(response.body().toString());
-			System.out.println(response.body().size());
 			
+			for (int i = 0; i < response.body().size(); i++) {
+				JsonObject total = new Gson().fromJson(response.body().get(i), JsonObject.class);
+				yearlyCommit += total.get("total").getAsInt();
+			}
+			
+			if (excessable) {
+				if (yearlyCommit >= range)
+					finalResult.add(owner_repo + "#" + yearlyCommit);
+			} else {
+				if (yearlyCommit <= range)
+					finalResult.add(owner_repo + "#" + yearlyCommit);
+			}
 		}
 		
 		catch(Exception ex) {
@@ -77,9 +89,4 @@ public class CommitActivity {
 	public boolean isBlocked() {
 		return blocked;
 	}
-
-	public String lastDate() {
-		return lastDate;
-	}
-	
 }
