@@ -5,6 +5,7 @@ import java.util.HashSet;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 
 import edu.handong.isel.allgitclone.control.GithubService;
 import edu.handong.isel.allgitclone.control.RetroBasic;
@@ -78,6 +79,10 @@ public class CommitActivity {
 				if (yearlyCommit <= range)
 					finalResult.add(owner_repo + "#" + yearlyCommit);
 			}
+		}
+		
+		catch(JsonSyntaxException jse) {
+			
 		}
 		
 		catch(Exception ex) {

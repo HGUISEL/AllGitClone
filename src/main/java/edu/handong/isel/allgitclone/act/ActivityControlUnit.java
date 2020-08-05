@@ -46,7 +46,7 @@ public class ActivityControlUnit {
 				
 				//random sleep time to 1~3s
 				dv = Math.random();
-				iv = (int)(dv * 2000) + 1;
+				iv = (int)(dv * 2000) + 100;
 				Thread.sleep(iv);
 				
 				repoOpt.replace("page", String.valueOf(pages));
@@ -70,6 +70,8 @@ public class ActivityControlUnit {
 		
 		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(today + "_Repo_list.csv"), true));
 		PrintWriter pw = new PrintWriter(bw, true);
+		pw.write("REPO" + "\n");
+		pw.flush();
 		
 		for (String result : repoResult) {
 			pw.write(base_github + result + "," + "\n");
@@ -109,11 +111,7 @@ public class ActivityControlUnit {
 			
 			
 			for (String query : repoResult)  {
-				dv = Math.random();
-				iv = (int)(dv * 2000) + 1;
-				Thread.sleep(iv);
-				
-				
+				Thread.sleep(300);
 				if (!searchCommit.isBlocked()) {
 					percentage = progress / repoResult.size() * 100.0;
 					System.out.println(String.format("%.1f", percentage) + "% work completed.");
@@ -123,7 +121,7 @@ public class ActivityControlUnit {
 				
 				else {
 					while (searchCommit.isBlocked()) {
-						Thread.sleep(iv);
+						Thread.sleep(300);
 						searchCommit.start(commitRange, excess, query, finalResult);
 					}
 					
@@ -133,7 +131,10 @@ public class ActivityControlUnit {
 			
 			bw = new BufferedWriter(new FileWriter(new File(today + "__list.csv"), true));
 			pw = new PrintWriter(bw, true);
+			pw.write("REPO" + "," + "COMMITS" + "\n");
+			pw.flush();
 			
+
 			for (String result : finalResult) {
 				String[] arr = result.split("#");
 				pw.write(base_github + arr[0] + "," + arr[1] + "," + "\n");
