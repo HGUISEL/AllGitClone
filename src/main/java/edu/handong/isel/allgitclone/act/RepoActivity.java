@@ -57,7 +57,6 @@ public class RepoActivity {
 			for (int i = 0; i < jsArr.size(); i++) {
 				JsonObject item = new Gson().fromJson(jsArr.get(i), JsonObject.class);
 				repoResult.add(item.get("full_name").getAsString());	
-				System.out.println(item.get("full_name").getAsString());
 				
 				if (i == jsArr.size() - 1)
 					lastDate = item.get("pushed_at").getAsString();
